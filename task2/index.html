@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    .focused {
+        outline: solid 2px red;
+    }
+    
+    .description__wrapper {
+        max-width: 300px;
+    }
+    p {
+        display: inline;
+        margin-top: 0;
+    }
+    .description__content {
+        margin-bottom: 10px;
+    }
+  </style>
+  <title>JS Bin</title>
+</head>
+<body>
+<div class='description__wrapper'>
+    <h1>Описание задачи</h1>
+    <div class="description__content">
+        <a href='https://jsbin.com/deyoteb/edit?html,css,js,output' target="_blank">https://jsbin.com/deyoteb/edit?html,css,js,output</a>
+        <p> - исправить код таким образом, чтобы при фокусе у инпутов добавлялась красная рамка. Обработка событий должна происходить на formElement.</p>
+    </div>
+    <form id="formElement">
+        One: <input type="text"><br>
+        Two: <input type="text">
+    </form>
+</div>
+</body>
+<script src="./task2.js"></script>
+</html>

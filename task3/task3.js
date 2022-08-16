@@ -1,4 +1,4 @@
-const readlineSync = require('readline-sync');
+const readlineSync = require('readline-sync'); 
 const checkMatchingNumbers=(value)=>{   //проверка на несовпадающие цифры в числе
     let flag = true
     value = value.split('')

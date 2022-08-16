@@ -1,0 +1,22 @@
+{
+  "name": "tasks_lad",
+  "version": "1.0.0",
+  "description": "",
+  "main": "task4.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DenisErichev/tasks_lad.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DenisErichev/tasks_lad/issues"
+  },
+  "homepage": "https://github.com/DenisErichev/tasks_lad#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
