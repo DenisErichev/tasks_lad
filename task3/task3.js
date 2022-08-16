@@ -1,75 +1,105 @@
 const readlineSync = require('readline-sync'); 
-const checkMatchingNumbers=(value)=>{   //проверка на несовпадающие цифры в числе
-    let flag = true
-    value = value.split('')
-    value.forEach((elem,index)=>{   ///проходимся по каждой цифре числа
-        let currentIndex = 0    //счетчик текущего индекса
-        while(currentIndex !== value.length){       ///пока мы не проверили все цифры числа
-            if(elem === value[currentIndex] && index !== currentIndex){    // проверка на совпадающие цифры в числе,
-                                                                           // каждую цифру проверяем с последующими
-                flag = false   //меняем флаг если есть совпавшая цифра
-            }
-            currentIndex++
-        }
-    })
-    return !flag? false : value
+//функция для проверки на совпадающие цифры в числе
+const checkMatchingNumbers=(value)=>{   
+    const uniqueNumberArray = [...new Set(value)]
+    const isHaveMatchedNumbers = uniqueNumberArray.length === value.length  &&  value
+
+    return isHaveMatchedNumbers
 }
 
-function getRandomValue(min, max) {
-    let currValue = (Math.trunc(Math.random() * (max - min) + min)) + '';
-    if(!checkMatchingNumbers(currValue)){   //проверка на несовпадающие цифры в числе
+function getRandomValue() {
+    let randomValue = `${(Math.trunc(Math.random() * (999999 - 100) + 100))}`;
 
-        return getRandomValue(min,max)      // если встречается хотя-бы одна повторяющаяся цифра в числе,
-                                            //находим новое число
+    //проверка на несовпадающие цифры в числе
+    if(!checkMatchingNumbers(randomValue)){  
+        // если встречается хотя-бы одна повторяющаяся цифра в числе,находим новое число
+        return getRandomValue()      
     }
-    return currValue
+    
+    return randomValue
 }
-const checkInputValue=()=>{
+
+const getUserValue=()=>{
     let input = readlineSync.question("Угадайте число: ");
-    if(isNaN(input)){   //проверка на ввод числа
+    //проверка на ввод числа
+    if(isNaN(input)){   
         console.log('Вы ввели не числовое значение.')
-        return checkInputValue()
+
+        return getUserValue()
     }
-    else if(input<100 || input>999999){ // проверка на то что оно (от 3 до 6 цифр)
+    // проверка на то что оно (от 3 до 6 цифр)
+    else if(input<100 || input>999999){ 
         console.log('Вы ввели число не от (3 до 6 цифр).')
-        return checkInputValue()
+
+        return getUserValue()
     }
     else if(!checkMatchingNumbers(input)){
         console.log('В числе не должно быть совпадающих цифр.')
-        return checkInputValue()
+
+        return getUserValue()
     }
+
     return input
-    
-}
-let moves=0 // счетчик количества попыток
-while(true){
-    let randomValue=getRandomValue(100,999999);
-    let countСoincidence=0;         //количество совпавших цифр на своих местах
-    let countMismatch=0             //количество совпавших цифр не на своих местах 
-    let numbersСoincidence=[]       //массив для совпавших цифр на своих местах
-    let numbersMismatch=[]          //массив для несовпавших цифр не на своих местах
-    let input = checkInputValue()
-    for(let i=0;i<randomValue.length;i++){      // проходим по каждой цифре загаданного числа
-        if(randomValue[i] === input[i]){        //если цифра загаданного и введенного числа совпала, и их индексы равны
-            countСoincidence++                  //увеличиваем счетчик совпавших цифр на своих местах
-            numbersСoincidence.push(randomValue[i]) // добавляем в массив для совпавших цифр на своих местах
-        }
-        for(let j=0;j<input.length;j++){                // проходим по каждой цифре введенного числа, начиная с первой
-            if(input[j] === randomValue[i] && i !== j){  //если мы нашли совпавшие цифры, но с разными индексами
-                countMismatch++                           //увеличиваем счетчик совпавших цифр не на своих местах
-                numbersMismatch.push(randomValue[i])      // добавляем в массив для совпавших цифр не на своих местах
-            }
-        }
-    }
-    console.log(`\nЗагаданное число: ${randomValue} ваше предположение: ${input}`)
-    console.log(`Cовпавших цифр не на своих местах - ${countMismatch} (${numbersMismatch.join(' и ')}), цифр на своих местах - ${countСoincidence} (${numbersСoincidence.join(' и ')})`)
-    if(randomValue === input){
-        console.log('Вы угадали загаданную цифру!')
-        break
-    }else if(moves === 5){                 
-        console.log('Количество попыток вышло!')
-        break
-    }
-    moves++;
 }
 
+const getComplexityLevel =()=>{
+    const complexity={
+        easy: 10,
+        middle: 5,
+        hard: 3 
+    }
+    const complexityInput = readlineSync.question('Введите уровень сложности(easy, middle, hard): 1-easy(10 попыток), 2-middle(5 попыток), 3-hard(3 попытки)');
+    const currentLevel = complexity[complexityInput]
+    console.log(currentLevel)
+
+    if(currentLevel){
+        return currentLevel
+    }
+    else{
+        console.log('Вы ввели некорректное значение, попробуйте еще.')
+
+        return complexityLevel()
+    }
+}
+
+const bullsAndCowsGameStart=()=>{
+// счетчик количества попыток
+let attempts=0
+const complexityLevel = getComplexityLevel()
+const randomValue=getRandomValue();
+    let inputValue=''
+    while(attempts !== complexityLevel && randomValue !== inputValue){
+        //количество совпавших цифр на своих местах
+        let countСoincidence=0; 
+        //количество совпавших цифр не на своих местах         
+        let countMismatch=0      
+        //массив для совпавших цифр на своих местах       
+        let numbersСoincidence=[] 
+        //массив для несовпавших цифр не на своих местах      
+        let numbersMismatch=[]          
+        inputValue = getUserValue()
+        // проходим по каждой цифре загаданного числа
+        for(let i=0;i<inputValue.length;i++){ 
+            //цифры в числе совпадающие не на своих местах
+            if(randomValue.includes(inputValue[i]) && randomValue[i] !== inputValue[i]){
+                countMismatch++
+                numbersMismatch.push(inputValue[i])
+            }
+            //цифры в числе совпадающие на своих местах
+            if(randomValue[i] === inputValue[i]){
+                countСoincidence++
+                numbersСoincidence.push(inputValue[i])
+            }
+        }
+        console.log(`\nЗагаданное число: ${randomValue} ваше предположение: ${inputValue}`)
+        console.log(`Cовпавших цифр не на своих местах - ${countMismatch} (${numbersMismatch.join(' и ')}), цифр на своих местах - ${countСoincidence} (${numbersСoincidence.join(' и ')})`)
+        if(randomValue === inputValue){
+            console.log('Вы угадали загаданную цифру!')
+        }else if(attempts === complexityLevel){                 
+            console.log('Количество попыток вышло!')
+        }
+        attempts++;
+    }
+
+}
+bullsAndCowsGameStart()
