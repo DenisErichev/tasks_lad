@@ -102,4 +102,5 @@ const randomValue=getRandomValue();
     }
 
 }
+
 bullsAndCowsGameStart()
