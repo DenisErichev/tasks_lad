@@ -155,7 +155,7 @@ const damageGeneration=(damageFromObject, objectToDamage, playerObject)=>{
 
     return damage
 }
-
+//функция убавляющая maxHealth, и показывающая урон
 const minusHealth = (playerObject, damage)=>{
     playerObject.maxHealth -= damage
     showCharacteristicsDamage(playerObject, damage)
@@ -163,29 +163,42 @@ const minusHealth = (playerObject, damage)=>{
 
 let computer = makeCopyObject(monster)
 let user = makeCopyObject(player)
-user.maxHealth = inputMaxHealth()   //выбор сложности
-let countMove=0     //счетчик текущего хода
+//выбор сложности
+user.maxHealth = inputMaxHealth()    
+//счетчик текущего хода
+let countMove=0     
 while(computer.maxHealth > 0 && user.maxHealth > 0){
     countMove++ 
     console.log("Текущий ход:",countMove)
-    addCooldownEveryRound(monster.moves, computer.moves)  //увеличиваем cooldown каждого хода
-    addCooldownEveryRound(player.moves, user.moves)       //увеличиваем cooldown каждого хода
+    //увеличиваем cooldown каждого хода
+    addCooldownEveryRound(monster.moves, computer.moves)  
+     //увеличиваем cooldown каждого хода
+    addCooldownEveryRound(player.moves, user.moves)       
 
     //Блок генерации хода монстра
-    let currentComputerMove = []       // массив, в который будем заносить кортеж- копия хода и номер хода в объекте
+    // массив, в который будем заносить кортеж- копия хода и номер хода в объекте
+    let currentComputerMove = []       
     while(currentComputerMove.length === 0){   
-        let indexMove = generateRandomIndexMove()  //случайный ход монстра
-        for(let i=0;i<monster.moves.length; i++){  // проходим по массиву ходов монстра
-            if(monster.moves[indexMove].cooldown === 0){   //если cooldown хода, первонач. объекта равен 0, и случайный индекс совпал 
-                currentComputerMove = [{...computer.moves[indexMove]}, indexMove]  //записываем кортеж из - копии хода и его индекса 
-                i=monster.moves.length        //если получили ход, выходим из цикла for
+        //случайный ход монстра
+        let indexMove = generateRandomIndexMove() 
+         // проходим по массиву ходов монстра 
+        for(let i=0;i<monster.moves.length; i++){ 
+            //если cooldown хода, первонач. объекта равен 0, и случайный индекс совпал 
+            if(monster.moves[indexMove].cooldown === 0){   
+                //записываем кортеж из - копии хода и его индекса 
+                currentComputerMove = [{...computer.moves[indexMove]}, indexMove] 
+                //если получили ход, выходим из цикла for 
+                i=monster.moves.length        
             }
 
             else if(i === indexMove && computer.moves[i].cooldown === monster.moves[indexMove].cooldown){  //если индекс текущего хода и случаного равны, а также cooldown копии равен первонач.
-                computer.moves[i].cooldown = -1     // 'обнуляем' cooldown копии: делаем -1, т.к. увеличение cooldown использованных ходов происходит сразу на каждом следующем ходе,
-                                                    // если поставим не -1, а 0, то ход будет доступен раньше
-                currentComputerMove = [{...computer.moves[indexMove]}, indexMove] //записываем кортеж из - копии хода и его индекса 
-                i=monster.moves.length        //если получили ход, выходим из цикла for
+                 // 'обнуляем' cooldown копии: делаем -1, т.к. увеличение cooldown использованных ходов происходит сразу на каждом следующем ходе,
+                 // если поставим не -1, а 0, то ход будет доступен раньше
+                computer.moves[i].cooldown = -1     
+                //записываем кортеж из - копии хода и его индекса                                 
+                currentComputerMove = [{...computer.moves[indexMove]}, indexMove] 
+                //если получили ход, выходим из цикла for
+                i=monster.moves.length        
             }
         }
     }
@@ -204,26 +217,37 @@ while(computer.maxHealth > 0 && user.maxHealth > 0){
     //Блок генерации хода игрока
     let currentUserMove = []
     while(currentUserMove.length === 0){
+        //выбор хода пользователем
         let userIndexMove=choicePlayerMove(player,user)
-        for(let i=0; i<player.moves.length;i++){        // проходим по массиву ходов игрока
-            if(player.moves[userIndexMove].cooldown === 0){         //если cooldown хода, первонач. объекта равен 0, и случайный индекс совпал 
-                currentUserMove = [{...user.moves[userIndexMove]}, userIndexMove]  //кортеж из: хода и его индекса
-                i=player.moves.length                   //если получили ход, выходим из цикла for
+        // проходим по массиву ходов игрока
+        for(let i=0; i<player.moves.length;i++){        
+             //если cooldown хода, первонач. объекта равен 0, и случайный индекс совпал 
+            if(player.moves[userIndexMove].cooldown === 0){       
+                //кортеж из: хода и его индекса
+                currentUserMove = [{...user.moves[userIndexMove]}, userIndexMove]  
+                //если получили ход, выходим из цикла for
+                i=player.moves.length                   
             }
-            else if(i === userIndexMove && user.moves[i].cooldown === player.moves[userIndexMove].cooldown){    //если индекс текущего хода и случаного равны, а также cooldown копии равен первонач.
-                currentUserMove = [{...user.moves[userIndexMove]}, userIndexMove]  //кортеж из: хода и его индекса
-                user.moves[userIndexMove].cooldown = -1      // 'обнуляем' cooldown копии
-                i=player.moves.length          //если получили ход, выходим из цикла for
+            //если индекс текущего хода и выбранного пользователем равны, а также cooldown копии равен первонач.
+            else if(i === userIndexMove && user.moves[i].cooldown === player.moves[userIndexMove].cooldown){    
+                //кортеж из: хода и его индекса
+                currentUserMove = [{...user.moves[userIndexMove]}, userIndexMove]  
+                // 'обнуляем' cooldown копии
+                user.moves[userIndexMove].cooldown = -1  
+                //если получили ход, выходим из цикла for   
+                i=player.moves.length          
             }
         }
-        if(currentUserMove.length === 0){ //уведомление пользователся если он ввел индекс 'замороженного' хода
+        //уведомление пользователся если он ввел индекс 'замороженного' хода
+        if(currentUserMove.length === 0){ 
             console.log(`\n!!!!!Данный ход пока заморожен.!!!!!\n`)
         }
     }
     console.log(`\n${user.name} ход: ${currentUserMove[0].name}\n`)
 
-
+    //урон от монстра
     let damageFromMonster = damageGeneration(currentComputerMove[0], currentUserMove[0],computer)
+    //урон от пользователя
     let damageFromUser = damageGeneration(currentUserMove[0], currentComputerMove[0], user)
     minusHealth(computer, damageFromUser)
     minusHealth(user, damageFromMonster)
