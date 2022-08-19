@@ -7,7 +7,8 @@ const checkMatchingNumbers=(value)=>{
     return isHaveMatchedNumbers
 }
 
-function getRandomValue() {
+//функция возвращающая рандомное число от 3 до 6 цифр
+const getRandomValue=()=>{
     let randomValue = `${(Math.trunc(Math.random() * (999999 - 100) + 100))}`;
 
     //проверка на несовпадающие цифры в числе
@@ -42,15 +43,15 @@ const getUserValue=()=>{
     return input
 }
 
+//функция выбора сложности
 const getComplexityLevel =()=>{
     const complexity={
         easy: 10,
         middle: 5,
         hard: 3 
     }
-    const complexityInput = readlineSync.question('Введите уровень сложности(easy, middle, hard): 1-easy(10 попыток), 2-middle(5 попыток), 3-hard(3 попытки)');
+    const complexityInput = readlineSync.question('Введите уровень сложности(easy, middle, hard): 1-easy(10 попыток), 2-middle(5 попыток), 3-hard(3 попытки): ');
     const currentLevel = complexity[complexityInput]
-    console.log(currentLevel)
 
     if(currentLevel){
         return currentLevel
@@ -62,6 +63,7 @@ const getComplexityLevel =()=>{
     }
 }
 
+//функция старта игры
 const bullsAndCowsGameStart=()=>{
 // счетчик количества попыток
 let attempts=0
@@ -69,6 +71,7 @@ const complexityLevel = getComplexityLevel()
 const randomValue=getRandomValue();
     let inputValue=''
     while(attempts !== complexityLevel && randomValue !== inputValue){
+        attempts++;
         //количество совпавших цифр на своих местах
         let countСoincidence=0; 
         //количество совпавших цифр не на своих местах         
@@ -98,7 +101,6 @@ const randomValue=getRandomValue();
         }else if(attempts === complexityLevel){                 
             console.log('Количество попыток вышло!')
         }
-        attempts++;
     }
 
 }
