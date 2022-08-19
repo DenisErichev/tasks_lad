@@ -68,26 +68,33 @@ const player={
     ]
 }
 
-//глобальная переменная
+//глобальная переменная health пользователя
 let userHealth=0
+//глобальная переменная для заблокированных ходов монстра
 let blockedEnemyMoves={}
+//глобальная переменная у заблокированных ходов пользователя
 let blockedUserMoves={}
 
+//функция ввода сложности(здоровья Евстафия)
 const choiceDifficulty=()=>{
     userHealth = readlineSync.question("Введите здоровье Евстафия: "); 
+    //проверка на ввод числа
     if(isNaN(userHealth)){
         console.log('Вы ввели не число!')
         return choiceDifficulty()
     }
 }
 
+//функция принимающая массив ходов, и возвращающая ход под рандомным индексом
 const getEnemyMove=(moves)=>{
    const moveIndex= Math.trunc(Math.random()*moves.length)
    return moves[moveIndex]
 }
-    
+
+//функция возвращающая массив достыпных ходов
 const getAvailableMoves = (moves, blockedMoves)=>moves.filter(move=>!(Object.keys(blockedMoves).includes(move.name)))
 
+//функция изменяющая cooldown ходов
 const changeCooldown=(blockedMoves)=>{
     const changeBlockedMovesObj={}
     Object.entries(blockedMoves).map(([key,value])=>[key,value-1])
@@ -97,8 +104,10 @@ const changeCooldown=(blockedMoves)=>{
     return changeBlockedMovesObj
 }
 
+//функция для выбора хода пользователем
 const getUserMoves=(moves)=>{
     console.log('\nВам доступны ходы:')
+    //вывод характеристик хода
     moves.forEach((move,index)=>console.log(`${index+1})`+move.name))
     moveIndex = readlineSync.question("Выберете ход: "); 
     console.log('\n')
@@ -109,12 +118,14 @@ const getUserMoves=(moves)=>{
     return moves[moveIndex-1]
 }
 
+//функция вычисления урона нанесенного врагу
 const calculateDamage=(attack,block)=>{
     const damage= (attack.physicalDmg-(attack.physicalDmg*block.physicArmorPercents)/100)+
                   (attack.magicDmg-(attack.magicDmg*block.magicArmorPercents)/100)
     return damage
 }
 
+//функция показывающая результат битвы
 const getGameResult=()=>{
     if(userHealth<=0 && monster.maxHealth<=0){
         console.log('Ничья.')
@@ -128,7 +139,16 @@ const getGameResult=()=>{
     
 }
 
+const showСharacteristicsMove=(move,playerName)=>{
+    console.log(`Ход ${playerName}:`)
+    Object.entries(move).map(([key,value])=>{
+        console.log(`${key}: ${value}`)
+    })
+    console.log('\n')
+}
+//функция для старта игры
 const gameStart=()=>{
+    //переменная для подсчета ходов
     let countMove=0
     choiceDifficulty()
     while(userHealth>0 && monster.maxHealth>0){
@@ -143,7 +163,7 @@ const gameStart=()=>{
             blockedEnemyMoves[monsterCurrentMove.name] = monsterCurrentMove.cooldown
         }
         console.log(`\nХод Лютого: ${monsterCurrentMove.name}`)
-
+        
         //Ход пользователя
         const userAvailableMoves=getAvailableMoves(player.moves, blockedUserMoves)
         const currentUserMove=getUserMoves(userAvailableMoves)
@@ -155,10 +175,14 @@ const gameStart=()=>{
         //Бой
         let damageForUser=calculateDamage(monsterCurrentMove, currentUserMove)
         let damageForMonster=calculateDamage(currentUserMove, monsterCurrentMove)
+        showСharacteristicsMove(currentUserMove,player.name)
+        showСharacteristicsMove(monsterCurrentMove, monster.name)
         console.log(`Вы нанесли по монстру: ${damageForMonster} урона.`)
-        console.log(`Монстер нанес по Евстафию: ${damageForUser} урона.\n`)
+        console.log(`Монстер нанес по Евстафию: ${damageForUser} урона.`)
         userHealth = userHealth-damageForUser
         monster.maxHealth = monster.maxHealth-damageForMonster
+        console.log(`Евстафий maxHealth: ${userHealth.toFixed(2)}`)
+        console.log(`Лютый maxHealth: ${monster.maxHealth.toFixed(2)}\n`)
     }
     getGameResult()
 }

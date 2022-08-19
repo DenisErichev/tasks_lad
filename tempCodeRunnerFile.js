@@ -1,3 +1,1 @@
-const makeMinusHealth=()=>{
-
-}
+showСharacteristicsMove
